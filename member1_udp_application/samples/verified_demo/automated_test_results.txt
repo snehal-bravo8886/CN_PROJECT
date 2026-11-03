@@ -1,0 +1,15 @@
+test_two_clients_all_severities_and_database (test_integration.IntegrationTests.test_two_clients_all_severities_and_database) ... ok
+test_detect_gaps_and_late_packets (test_protocol.ProtocolTests.test_detect_gaps_and_late_packets) ... ok
+test_five_ports (test_protocol.ProtocolTests.test_five_ports) ... ok
+test_reject_boolean_sequence (test_protocol.ProtocolTests.test_reject_boolean_sequence) ... ok
+test_reject_invalid_host (test_protocol.ProtocolTests.test_reject_invalid_host) ... ok
+test_reject_malformed (test_protocol.ProtocolTests.test_reject_malformed) ... ok
+test_reject_mismatched_port (test_protocol.ProtocolTests.test_reject_mismatched_port) ... ok
+test_reject_overlong_message (test_protocol.ProtocolTests.test_reject_overlong_message) ... ok
+test_roundtrip (test_protocol.ProtocolTests.test_roundtrip) ... ok
+test_reject_bad_datagrams_and_restore_gap (test_server_resilience.ResilienceTests.test_reject_bad_datagrams_and_restore_gap) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 3.794s
+
+OK

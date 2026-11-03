@@ -1,0 +1,20 @@
+=== MEMBER 1 UDP APPLICATION DEMO ===
+Local ports: 18000..18004
+
+--- Client h1 ---
+[DONE] host=h1 session=20cab063-4437-4e7e-bae4-c8ce8dbc6490 sent=15 counts={'DEBUG': 3, 'INFO': 3, 'WARNING': 3, 'ERROR': 3, 'CRITICAL': 3}
+
+--- Client h2 ---
+[DONE] host=h2 session=12366b61-4157-4fb8-8166-7054144a6c6b sent=10 counts={'DEBUG': 2, 'INFO': 2, 'WARNING': 2, 'ERROR': 2, 'CRITICAL': 2}
+
+--- Server ---
+[READY] UDP server listening on 127.0.0.1, ports DEBUG=18000, INFO=18001, WARNING=18002, ERROR=18003, CRITICAL=18004
+[STATS] datagrams=25 stored=25 invalid=0 duplicates=0 out_of_order=0 apparent_gaps=0 counts={'DEBUG': 5, 'INFO': 5, 'WARNING': 5, 'ERROR': 5, 'CRITICAL': 5}
+
+--- Packet loss and delay comparison ---
+SEVERITY   SENT  RECEIVED  LOST  LOSS_%   MEAN_ONE_WAY_DELAY_MS
+DEBUG      5     5         0     0.0      0.327
+INFO       5     5         0     0.0      0.265
+WARNING    5     5         0     0.0      0.228
+ERROR      5     5         0     0.0      0.267
+CRITICAL   5     5         0     0.0      0.439

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "host_id": "h2",
+  "session_id": "12366b61-4157-4fb8-8166-7054144a6c6b",
+  "server": "127.0.0.1",
+  "base_port": 18000,
+  "sent_by_severity": {
+    "DEBUG": 2,
+    "INFO": 2,
+    "WARNING": 2,
+    "ERROR": 2,
+    "CRITICAL": 2
+  },
+  "sent_total": 10,
+  "started_at_ns": 1793630561854388382,
+  "finished_at_ns": 1793630561992756206
+}

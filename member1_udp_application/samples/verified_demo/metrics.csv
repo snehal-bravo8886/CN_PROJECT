@@ -1,0 +1,6 @@
+severity,sent,received,lost,packet_loss_pct,mean_one_way_delay_ms
+DEBUG,5,5,0,0.0,0.327
+INFO,5,5,0,0.0,0.265
+WARNING,5,5,0,0.0,0.228
+ERROR,5,5,0,0.0,0.267
+CRITICAL,5,5,0,0.0,0.439
