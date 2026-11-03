@@ -1,0 +1,23 @@
+name: Member 1 UDP unit and integration tests
+
+on:
+  push:
+    paths:
+      - 'member1_udp_application/**'
+      - '.github/workflows/member1-tests.yml'
+  pull_request:
+    paths:
+      - 'member1_udp_application/**'
+      - '.github/workflows/member1-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test Member 1 application
+        working-directory: member1_udp_application
+        run: python -m unittest discover -s tests -v
