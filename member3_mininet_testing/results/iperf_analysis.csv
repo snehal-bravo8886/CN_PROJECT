@@ -1,0 +1,4 @@
+experiment,throughput_mbps,jitter_ms,lost_datagrams,total_datagrams,udp_loss_percent
+Light,0.5,0.717,0,1296,0.0
+Medium,1.5,0.655,0,3885,0.0
+Heavy,1.94,2.173,2700,7770,35.0

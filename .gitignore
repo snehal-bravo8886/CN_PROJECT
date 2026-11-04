@@ -10,3 +10,7 @@ __pycache__/
 **/demo_output/
 **/results/
 !**/samples/verified_demo/
+
+# Include Member 3 experiment results
+!member3_mininet_testing/results/
+!member3_mininet_testing/results/**

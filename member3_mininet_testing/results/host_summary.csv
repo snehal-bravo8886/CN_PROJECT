@@ -1,0 +1,7 @@
+experiment,host,sent,received,lost,loss_percent
+Light,H1,300,300,0,0.0
+Light,H2,300,300,0,0.0
+Medium,H1,300,300,0,0.0
+Medium,H2,300,300,0,0.0
+Heavy,H1,300,133,167,55.67
+Heavy,H2,300,210,90,30.0
