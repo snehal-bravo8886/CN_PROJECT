@@ -1,2 +1,0 @@
-# Pin/test in the lab VM; Ryu 4.34 is legacy and may need a compatible Python environment.
-ryu==4.34
