@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
-# Read-only OVS/OpenFlow inspection. Pass switch name (default s1).
 set -euo pipefail
-SWITCH="${1:-s1}"
-echo "=== OVS configuration ==="
-sudo ovs-vsctl show
-sudo ovs-vsctl list-ports "$SWITCH"
-echo "=== OpenFlow 1.3 ports, DPID and port numbers ==="
-sudo ovs-ofctl -O OpenFlow13 show "$SWITCH"
-echo "=== Installed flows ==="
-sudo ovs-ofctl -O OpenFlow13 dump-flows "$SWITCH"
+BRIDGE="${1:-s1}"
+PORT="${2:-s1-eth4}"
+
+echo "=== Open vSwitch version ==="
+ovs-vswitchd --version
+echo "=== Mininet version ==="
+mn --version || true
+echo "=== Bridge protocols ==="
+sudo ovs-vsctl get Bridge "$BRIDGE" protocols
+echo "=== Switch DPID and ports ==="
+sudo ovs-ofctl -O OpenFlow13 show "$BRIDGE"
+echo "=== Flows ==="
+sudo ovs-ofctl -O OpenFlow13 dump-flows "$BRIDGE"
+echo "=== Bottleneck port QoS attachment ==="
+sudo ovs-vsctl list Port "$PORT"
 echo "=== QoS objects ==="
 sudo ovs-vsctl list QoS
+echo "=== Queue objects ==="
 sudo ovs-vsctl list Queue

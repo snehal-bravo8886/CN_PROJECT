@@ -1,39 +1,33 @@
 # Member 2 evidence log
 
-Replace every field with output from an actual run. Do not report expected events
-or example values as observed results.
+Replace each field with evidence from an actual run. Do not report expected events as observed.
 
 - Date/time:
-- Host OS / VM and architecture:
-- Python version used by Ryu:
-- Ryu version:
+- Host OS / VM architecture:
+- Python version:
+- OS-Ken version:
 - Open vSwitch version:
 - Mininet version:
-- Switch name:
-- Switch DPID (from live OVS output):
-- Bottleneck egress interface name:
-- Bottleneck OpenFlow port number:
-- Confirmed bottleneck rate:
-- Member 1 UDP destination-port mapping verified: yes/no
+- Switch DPID:
+- Bottleneck egress interface and OpenFlow port:
+- Configured bottleneck rate:
 
-## Controller startup
-Paste actual Ryu startup and switch-connection output.
+## Startup evidence
+Paste actual `osken-manager` startup and switch connection output.
+Confirm `OPENFLOW_READY dpid=1 version=1.3`.
 
-## OVS / OpenFlow
-Paste actual `ovs-ofctl -O OpenFlow13 show` and `dump-flows` output.
+## QoS evidence
+Paste actual `ovs-vsctl list Port s1-eth4`, `list QoS`, and `list Queue` output.
 
-## QoS
-Paste actual `ovs-vsctl list Port`, `list QoS`, and `list Queue` output.
-
-## Congestion transition
+## Congestion transition evidence
 Paste actual `BOTTLENECK_STATS`, `CONGESTION_ENTERED`, and `POLICY_CHANGED` lines.
 
-## Queue assignment
-Capture actual `LOG_PACKET` lines for DEBUG, INFO, WARNING, ERROR, and CRITICAL
-while congestion is active. Verify queue IDs, not just severity labels.
+## Severity queue evidence
+Capture actual `LOG_PACKET` lines for DEBUG, INFO, WARNING, ERROR and CRITICAL
+while congestion is active, including the queue IDs.
 
-## Recovery
-Paste actual `CONGESTION_CLEARED` and baseline-policy restoration lines.
+## Recovery evidence
+Paste actual `CONGESTION_CLEARED` and baseline restoration lines.
 
 ## Notes / deviations
-Record failures, deviations, and behavior that could not be verified.
+Record anything that differed from the planned configuration.

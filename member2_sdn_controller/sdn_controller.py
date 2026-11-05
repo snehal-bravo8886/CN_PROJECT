@@ -20,34 +20,20 @@ import os
 import time
 from collections import defaultdict
 
-from ryu.base import app_manager
-from ryu.controller import ofp_event
-from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER, DEAD_DISPATCHER, set_ev_cls
-from ryu.ofproto import ofproto_v1_3
-from ryu.lib.packet import packet, ethernet, ipv4, udp
-from ryu.lib.packet import ether_types
-from ryu.lib import hub
+from os_ken.base import app_manager
+from os_ken.controller import ofp_event
+from os_ken.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER, DEAD_DISPATCHER, set_ev_cls
+from os_ken.ofproto import ofproto_v1_3
+from os_ken.lib.packet import packet, ethernet, ipv4, udp
+from os_ken.lib.packet import ether_types
+from os_ken.lib import hub
 
 
 # ----------------------- TEAM CONFIGURATION -----------------------
-# These values must come from live OVS/Mininet inspection. Never guess the port.
-def _required_int_env(name):
-    value = os.environ.get(name)
-    if value is None or not value.strip():
-        raise RuntimeError(
-            f"Missing {name}. Inspect the live topology; see README_MEMBER2.md."
-        )
-    try:
-        parsed = int(value)
-    except ValueError as exc:
-        raise RuntimeError(f"{name} must be an integer, got {value!r}") from exc
-    if parsed <= 0:
-        raise RuntimeError(f"{name} must be greater than zero")
-    return parsed
-
-BOTTLENECK_DPID = _required_int_env("BOTTLENECK_DPID")
-BOTTLENECK_PORT = _required_int_env("BOTTLENECK_PORT")
-LINK_CAPACITY_BPS = _required_int_env("LINK_CAPACITY_BPS")
+# Fill these in after Member 3 shares the Mininet topology.
+BOTTLENECK_DPID = int(os.getenv("BOTTLENECK_DPID", "1"))
+BOTTLENECK_PORT = int(os.getenv("BOTTLENECK_PORT", "4"))
+LINK_CAPACITY_BPS = int(os.getenv("LINK_CAPACITY_BPS", "2000000"))
 POLL_INTERVAL_SECONDS = 2
 CONGESTION_ENTER_PERCENT = 80.0
 CONGESTION_CLEAR_PERCENT = 60.0
@@ -70,7 +56,7 @@ UDP_PORT_TO_SEVERITY = {
 }
 
 
-class DistributedLogSDNController(app_manager.RyuApp):
+class DistributedLogSDNController(app_manager.OSKenApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
 
     def __init__(self, *args, **kwargs):

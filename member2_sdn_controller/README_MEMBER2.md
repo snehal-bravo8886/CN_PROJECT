@@ -1,19 +1,37 @@
 # Member 2 — SDN Controller (OpenFlow 1.3)
 
-## Function and UDP contract
+## Update summary
 
-This is a single-switch Ryu learning-switch starter. It learns MAC addresses,
-forwards IPv4/UDP packets, polls one configured switch egress port, and selects
-an OVS queue for recognized log packets while congestion is active.
+This package migrates the supplied Ryu-based controller to **OS-Ken**, a maintained
+Ryu-derived framework. The controller source imports have been changed from `ryu.*`
+to `os_ken.*`; the OpenFlow application logic and UDP severity-to-queue contract
+are retained. OS-Ken documents itself as a Ryu fork and provides the `osken-manager`
+command. See the upstream OS-Ken documentation and PyPI metadata linked below.
 
-OpenFlow flow-table priority controls rule-match precedence; it is not packet
-scheduling priority. Service differentiation is attempted through
-`OFPActionSetQueue` and OVS QoS queues.
+**Runtime target:** Python 3.11 in a project-local virtual environment.
+**Dependency pin:** `os-ken==4.2.2`.
+This version is selected from current package metadata; it has not been executed
+inside your VM by this file-generation process. Successful installation and live
+OpenFlow/OVS integration must still be verified on your machine.
 
-The sender must use this exact UDP destination-port mapping (confirm Member 1's
-client actually implements it):
+## Verified topology values supplied by the project screenshots
 
-| Severity | UDP destination port | OVS queue ID |
+| Setting | Value |
+|---|---:|
+| Switch | `s1` |
+| DPID | `1` |
+| Log-server-facing egress | `s1-eth4` |
+| OpenFlow port | `4` |
+| Bottleneck capacity | `2,000,000` bps (2 Mbps) |
+| OpenFlow version | 1.3 |
+| Controller TCP port | 6653 |
+
+These are the values reported from your Mininet/OVS inspection. Recheck them if
+the topology changes. The controller reads DPID, port and capacity from `.env`.
+
+## UDP contract (must match Member 1)
+
+| Severity | UDP destination port | OVS queue |
 |---|---:|---:|
 | DEBUG | 10000 | 0 |
 | INFO | 10001 | 1 |
@@ -21,114 +39,87 @@ client actually implements it):
 | ERROR | 10003 | 3 |
 | CRITICAL | 10004 | 4 |
 
-The controller does not inspect a severity label in the UDP payload.
+The client must send each severity to its corresponding UDP destination port.
+The controller does not inspect a severity label in the payload.
 
-## Required live topology configuration
+## Install OS-Ken in an isolated environment
 
-The controller deliberately refuses to start unless these environment variables
-are set from actual OVS/Mininet inspection:
-
-- `BOTTLENECK_DPID`: actual switch datapath ID.
-- `BOTTLENECK_PORT`: OpenFlow port number for traffic leaving the switch toward
-  the constrained link / central log server.
-- `LINK_CAPACITY_BPS`: confirmed link capacity in bits per second.
-
-Member 3's topology was previously described as having a 2 Mbps server-facing
-link. If the live topology confirms that, set `LINK_CAPACITY_BPS=2000000`.
-Do not assume the DPID or port number.
-
-Inspect the live switch:
+From this directory, use Python 3.11. The setup script prefers the Python 3.11
+interpreter already managed by `uv`, if available. It does not modify system Python.
 
 ```bash
-sudo ovs-vsctl show
-sudo ovs-vsctl list-ports s1
-sudo ovs-ofctl -O OpenFlow13 show s1
+chmod +x setup_controller_env.sh run_controller.sh setup_queues.sh ovs_verification_commands.sh
+./setup_controller_env.sh
+cp .env.example .env
+cat .env
 ```
 
-Match the server-facing interface to the topology before choosing the egress
-port. The OpenFlow `show` output provides the DPID and numbered ports.
+Review `.env`; it should contain DPID `1`, port `4`, and capacity `2000000`.
+Do not commit a real `.env` if your team treats local configuration as untracked.
 
-## Set runtime configuration
+## Start order
 
-Example only; replace DPID and PORT with the actual values:
+1. Start the Mininet topology with the switch configured for OpenFlow 1.3 and
+   connected to the controller at the controller VM's reachable IP, TCP 6653.
+2. Start the controller from this directory:
 
-```bash
-export BOTTLENECK_DPID=1
-export BOTTLENECK_PORT=<confirmed-openflow-port-number>
-export LINK_CAPACITY_BPS=2000000
-```
+   ```bash
+   ./run_controller.sh
+   ```
 
-Start the controller from the repository root after Ryu has been installed in
-the Python environment being used:
+3. Confirm startup logs include `OPENFLOW_READY dpid=1 version=1.3`.
+4. Only after confirming the actual port and capacity, configure QoS. The setup
+   script defaults to dry-run and requires both `--apply` and typing `APPLY`:
 
-```bash
-ryu-manager --ofp-tcp-listen-port 6653 member2_sdn_controller/sdn_controller.py
-```
+   ```bash
+   sudo ./setup_queues.sh s1-eth4 2
+   sudo ./setup_queues.sh s1-eth4 2 --apply
+   ```
 
-Configure Mininet's OVS switch for OpenFlow 1.3 and connect it to the controller
-at TCP port 6653.
+   This replaces the QoS attachment on `s1-eth4`; inspect the existing state first.
+   Do not run the apply command if the interface is not the actual bottleneck egress.
 
-## Ryu installation compatibility warning
-
-`requirements.txt` retains the team's requested `ryu==4.34`. Ryu 4.34 is an old
-release. In the current lab VM, Python 3.11.18 was installed with `uv`, but the
-Ryu installation failed during package metadata/build setup with a
-`types.SimpleNamespace` / `get_script_args` error. Pinning setuptools to 57.5.0
-did not resolve the attempted install. This package therefore does not claim
-that Ryu is installed or working.
-
-Do not repeatedly retry installs or change system Python. The team should agree
-on a tested Ryu-compatible environment/version or maintained compatible
-controller package, then record the exact versions tested. Do not silently
-change the dependency without team approval.
-
-## OVS QoS queues
-
-Identify the confirmed bottleneck egress interface first. The setup script asks
-for explicit `YES` confirmation because it clears/replaces the QoS attachment
-on the selected port:
-
-```bash
-sudo bash member2_sdn_controller/setup_queues.sh <confirmed-port-name> 2
-```
-
-The `2` is an example for a confirmed 2 Mbps link. Use the actual configured
-parent rate. Queue minimum-rate shares are DEBUG 5%, INFO 10%, WARNING 15%,
-ERROR 25%, CRITICAL 45%. Queue creation and controller queue selection are
-separate operations. Verify Linux-HTB support and measure actual scheduling.
-
-## Congestion policy
+## Congestion behavior
 
 - Port statistics are polled every 2 seconds.
-- Congestion enters at or above 80% utilization.
-- Congestion clears at or below 60%.
-- Between 60% and 80%, the previous state is retained.
-- Queue selection applies only to recognized UDP log packets leaving the
-  configured DPID/egress port while congestion is active.
+- Enter congestion at or above 80% of configured link capacity.
+- Clear congestion at or below 60%; between 60% and 80%, retain prior state.
+- While congested, recognized UDP log packets leaving DPID 1 through port 4 receive
+  queue IDs 0–4 according to severity.
+- When congestion clears, dynamic flows are removed and subsequent packets use
+  baseline forwarding.
 
-This is a simple TX-counter utilization heuristic, not a universal congestion
-detector. Verify it using actual traffic and controller logs.
+OVS queue selection (`OFPActionSetQueue`) performs packet service differentiation;
+OpenFlow flow priority is only match precedence.
 
 ## Verification
 
 ```bash
-sudo ovs-vsctl get Bridge s1 protocols
+sudo ovs-vsctl set bridge s1 protocols=OpenFlow13
 sudo ovs-ofctl -O OpenFlow13 show s1
 sudo ovs-ofctl -O OpenFlow13 dump-flows s1
+sudo ovs-vsctl list Port s1-eth4
 sudo ovs-vsctl list QoS
 sudo ovs-vsctl list Queue
 ```
 
-Expected log labels include `OPENFLOW_READY`, `BOTTLENECK_STATS`,
-`CONGESTION_ENTERED`, `LOG_PACKET`, `CONGESTION_CLEARED`, and
-`POLICY_CHANGED`. These labels are not evidence that events occurred; capture
-actual run output.
+Capture actual controller output for `OPENFLOW_READY`, `BOTTLENECK_STATS`,
+`CONGESTION_ENTERED`, `POLICY_CHANGED`, severity `LOG_PACKET` events,
+`CONGESTION_CLEARED`, and baseline restoration.
 
-## Known limitations
+## Important limitations and evidence
 
-- Single-switch learning-switch implementation.
-- Correct DPID, egress port and link capacity are required.
-- Member 1's UDP destination ports must match the table above.
-- Queue selection occurs only on the configured bottleneck egress.
-- OVS/Linux QoS support and actual scheduling behavior must be tested.
-- No successful Ryu runtime test is claimed in this package.
+This is a single-switch learning-switch starter implementation. Queue scheduling
+depends on Linux HTB support in the OVS host and must be demonstrated with traffic.
+The controller's utilization estimate is derived from TX-byte counter deltas and is
+a lab heuristic, not a universal congestion detector. Queue objects existing in OVSDB
+do not by themselves prove packets were scheduled as intended.
+
+Record actual Python, OS-Ken, OVS and Mininet versions. Do not write that the
+controller ran successfully until the startup and traffic tests pass.
+
+## Upstream references
+
+- OS-Ken project: https://github.com/openstack/os-ken
+- OS-Ken documentation: https://docs.openstack.org/os-ken/latest/
+- OS-Ken package: https://pypi.org/project/os-ken/4.2.2/
