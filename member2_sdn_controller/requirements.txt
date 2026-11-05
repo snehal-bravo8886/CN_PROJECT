@@ -1,0 +1,2 @@
+# Ryu 4.34 is legacy; see README_MEMBER2.md for the known installation issue.
+ryu==4.34
