@@ -1,30 +1,23 @@
-# Member 2 — SDN Controller
+# Member 2 — TEJAS DIWAKAR — SDN controller
 
-**Status: pending teammate implementation.** This folder contains the agreed interface and task list; it is **not** controller code.
+**Status:** Implemented and integrated. The [final integration report](../docs/integration/FINAL_INTEGRATION_REPORT.md) records successful OpenFlow 1.3 connection, congestion activation and all five severity queue mappings.
 
-## Your responsibilities
+## Current implementation
 
-1. Use an OpenFlow 1.3-compatible controller (Ryu / suitable supported equivalent).
-2. Install correct forwarding rules between Mininet clients and the central log server.
-3. Classify IPv4 UDP packets using their destination ports:
-   - 10000 DEBUG (lowest)
-   - 10001 INFO (low)
-   - 10002 WARNING (medium)
-   - 10003 ERROR (high)
-   - 10004 CRITICAL (highest)
-4. Coordinate with Member 3 to create and map OVS QoS queues **on the bottleneck egress port**. A high OpenFlow flow-table priority is *not* the same as packet service priority.
-5. Monitor traffic/flow statistics and identify congestion.
-6. Switch to severity-based priority handling when congestion is observed, then restore baseline policy when congestion clears.
-7. Document actual commands, queue mapping, screenshots and observed controller events.
+- sdn_controller.py — OS-Ken learning switch, IPv4 UDP destination-port classification, port/flow polling, dynamic queue selection.
+- requirements.txt — OS-Ken 3.1.1; Python 3.11 target.
+- setup_controller_env.sh and run_controller.sh — isolated environment and controller startup.
+- .env.example — DPID 1, bottleneck port 4, 2 Mbps, TCP 6653.
+- setup_queues.sh — Linux HTB queues on s1-eth4; dry-run by default, explicit confirmation before replacing QoS.
+- ovs_verification_commands.sh — inspection of the bridge, flow tables and queues.
 
-## Files to add
+Poll interval is 2 seconds. Congestion activates at >=80% utilization, clears at <=60%, and retains the current state in between. The controller removes learned flows on a policy transition so subsequent packets receive the new actions. OpenFlow rule priority is not packet scheduling priority.
 
-Your controller source, launch/setup notes, version/dependencies, OpenFlow/OVS configuration, verification commands, and any real evidence of changing traffic policy.
+## Documentation
 
-## Read first
+- [Current controller setup](README_MEMBER2.md)
+- [End-to-end integration commands](../docs/INTEGRATION.md)
+- [Final integration report](../docs/integration/FINAL_INTEGRATION_REPORT.md)
+- [Evaluation and evidence](../docs/EVALUATION.md)
 
-- [Shared integration guide](../docs/INTEGRATION.md)
-- [Member 1 application](../member1_udp_application/README.md)
-- [Member 1 handoff](../member1_udp_application/TEAMMATE_HANDOFF.md)
-
-Keep implementation confined here, coordinating any shared interface changes via pull request.
+The older Ryu troubleshooting document and ZIP packages are historical; use the current checked-in source and requirements. The evidence template is for recording new runs, not a completed execution log.
