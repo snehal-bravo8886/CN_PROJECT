@@ -1,25 +1,48 @@
-# Distributed Log Aggregation System (UDP + SDN)
+# Team 10 — QoS Traffic Management System (UDP)
 
-**Computer Networks team project** — Python UDP sockets · Open vSwitch · Software-Defined Networking · Mininet
+**Distributed Log Aggregation System (UDP + SDN)** · Computer Networks · PES University
 
-## Project goal
+This project uses Python UDP sockets, Mininet, Open vSwitch (OVS), and an OS-Ken software-defined networking controller to collect application logs and dynamically differentiate network service during congestion.
 
-Multiple computers send DEBUG, INFO, WARNING, ERROR, and CRITICAL logs over UDP to a central log collector. When network congestion happens, an SDN controller should prioritize important logs. The team will compare loss and delay with and without prioritization.
+## Team and completed components
 
-## Member ownership and current status
+| Member | Name | Component |
+|---|---|---|
+| 1 | SNEHAL AGRAWAL | [UDP application](member1_udp_application/): traffic generation, validation, SQLite collection, statistics and automated tests |
+| 2 | TEJAS DIWAKAR | [SDN controller](member2_sdn_controller/): OpenFlow 1.3 forwarding, congestion monitoring and QoS queue selection |
+| 3 | SIDDHANT CHAWLA | [Mininet and evaluation](member3_mininet_testing/): topology, bottleneck, congestion tests, integration and performance analysis |
 
-| Folder | Member | Responsibilities | Status |
-|---|---|---|---|
-| [member1_udp_application/](member1_udp_application/) | **Member 1** | UDP clients/server, timestamped logs, sequence tracking, SQLite, statistics, unit/integration tests | **Implemented; 10/10 tests passed locally** |
-| [member2_sdn_controller/](member2_sdn_controller/) | **Member 2** | Controller, congestion monitoring, OpenFlow 1.3 rules, OVS QoS queue assignment | **Pending implementation** |
-| [member3_mininet_testing/](member3_mininet_testing/) | **Member 3** | Topology, bottleneck and congestion experiments, integration, performance graphs | **Pending implementation** |
-| [docs/](docs/) | Shared | Protocol specification, integration and acceptance checklist | Prepared |
+All three components have been implemented and integrated, as documented in the [final integration report](docs/integration/FINAL_INTEGRATION_REPORT.md).
 
-**Important:** The successful local UDP demonstration does not establish that SDN prioritization or Mininet integration works. Those are separate team tasks.
+## Architecture
 
-## Running Member 1 locally
+```text
+                           OS-Ken controller
+                              OpenFlow 1.3
+                                   |
+h1 (10.0.0.1) -- 10 Mbps --+       |
+h2 (10.0.0.2) -- 10 Mbps --+------ s1 -- 2 Mbps / 10 ms -- h4 (10.0.0.4)
+h3 (10.0.0.3) -- 10 Mbps --+       OVS port 4              UDP collector
+   iperf3 background traffic      s1-eth4                 SQLite
+```
 
-Requires Python 3.10+ (standard library only). Open a terminal at the repository root:
+H1 and H2 generate log traffic; H3 generates UDP background load to congest the bottleneck to H4. The controller polls the bottleneck every 2 seconds, enters severity-priority mode at utilization >= 80%, and returns to baseline forwarding at <= 60%. Between these thresholds it retains the current policy.
+
+## Traffic classification and QoS
+
+| Severity | UDP destination port | OVS queue | HTB minimum-rate share |
+|---|---:|---:|---:|
+| DEBUG | 10000 | 0 | 5% |
+| INFO | 10001 | 1 | 10% |
+| WARNING | 10002 | 2 | 15% |
+| ERROR | 10003 | 3 | 25% |
+| CRITICAL | 10004 | 4 | 45% |
+
+The controller classifies by UDP destination port (not JSON contents). OpenFlow rule priority is match precedence; Linux HTB queues provide the configured service differentiation. Queue IDs and shares are not strict-priority guarantees.
+
+## Quick start — application only
+
+Python 3.10+; standard library only. From the repository root:
 
 ```bash
 cd member1_udp_application
@@ -29,22 +52,31 @@ python3 -m app.query_logs --db demo_output/logs.db --stats
 python3 -m app.query_logs --db demo_output/logs.db --severity CRITICAL
 ```
 
-The local demo runs two clients and stores 25 messages from five severities. It uses UDP ports **18000–18004** locally. The default ports for integration are **10000–10004**.
+The recorded local demo uses ports 18000–18004 and stores 25/25 logs. The integrated system uses ports 10000–10004.
 
-## Agreed severity-to-port mapping
+## Full system
 
-| Severity | UDP destination port | Priority |
-|---|---:|---|
-| DEBUG | 10000 | Lowest |
-| INFO | 10001 | Low |
-| WARNING | 10002 | Medium |
-| ERROR | 10003 | High |
-| CRITICAL | 10004 | Highest |
+Use a Linux/Ubuntu lab environment with Mininet, OVS, iperf3, Python 3.11 and the controller dependency pinned in [requirements.txt](member2_sdn_controller/requirements.txt) (OS-Ken 3.1.1). Python scripts do not require compilation or a Makefile.
 
-One UDP datagram carries a JSON object with `version`, `host_id`, `session_id`, `severity`, `sequence`, `sent_ns`, and `message`. See [docs/INTEGRATION.md](docs/INTEGRATION.md) for the handoff contract and full-team verification requirements.
+Follow the [end-to-end integration guide](docs/INTEGRATION.md) to start the controller, topology, queue configuration, UDP clients and collector, and run controlled background traffic.
 
-## How teammates contribute
+## Recorded results
 
-Each member changes files in **their own folder**, preferably on separate branches such as `member2-controller` or `member3-mininet`. Open pull requests to merge with `main`. Discuss IP addressing, controller versions, OVS queue IDs and link port selection before running the combined demo.
+| Experiment | H1 + H2 logs received / sent | Background UDP receiver throughput | Background UDP loss |
+|---|---:|---:|---:|
+| Light (0.5 Mbps offered) | 600/600 | 0.50 Mbps | 0% |
+| Medium (1.5 Mbps offered) | 600/600 | 1.50 Mbps | 0% |
+| Heavy (3 Mbps offered) | 343/600 | 1.94 Mbps | 35% |
 
-**Commit source, docs and small representative outputs.** Do not commit generated SQLite databases, Python caches or temporary output directories.
+These are the committed baseline experiment results in [results/](member3_mininet_testing/results/). The separate final integration report records 50 stored logs (10 per severity), approximately 12 ms mean one-way delay per severity, congestion activation at approximately 100% utilization, and verified queue mappings. These results demonstrate integration; they are not a matched quantitative QoS-versus-FIFO comparison.
+
+## Documentation and evidence
+
+- [Integration guide and protocol contract](docs/INTEGRATION.md)
+- [Final integration report](docs/integration/FINAL_INTEGRATION_REPORT.md)
+- [Application test evidence](member1_udp_application/samples/verified_demo/)
+- [Controller setup and verification](member2_sdn_controller/README_MEMBER2.md)
+- [Baseline performance results and graphs](member3_mininet_testing/results/)
+- [Evaluation summary and fairness calculations](docs/EVALUATION.md) (derived from archived baseline measurements)
+
+Do not commit generated databases, caches, credentials, or temporary output. Preserve representative experiment evidence and label test conditions.
