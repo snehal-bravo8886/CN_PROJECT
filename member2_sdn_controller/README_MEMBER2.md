@@ -9,10 +9,8 @@ are retained. OS-Ken documents itself as a Ryu fork and provides the `osken-mana
 command. See the upstream OS-Ken documentation and PyPI metadata linked below.
 
 **Runtime target:** Python 3.11 in a project-local virtual environment.
-**Dependency pin:** `os-ken==4.2.2`.
-This version is selected from current package metadata; it has not been executed
-inside your VM by this file-generation process. Successful installation and live
-OpenFlow/OVS integration must still be verified on your machine.
+**Dependency pin:** `os-ken==3.1.1`.
+This is the current requirements.txt pin. The [final integration report](../docs/integration/FINAL_INTEGRATION_REPORT.md) records successful OS-Ken/OpenFlow integration; exact runtime version output is not separately archived.
 
 ## Verified topology values supplied by the project screenshots
 
@@ -109,17 +107,16 @@ Capture actual controller output for `OPENFLOW_READY`, `BOTTLENECK_STATS`,
 
 ## Important limitations and evidence
 
-This is a single-switch learning-switch starter implementation. Queue scheduling
+This is a single-switch learning-switch implementation. Queue scheduling
 depends on Linux HTB support in the OVS host and must be demonstrated with traffic.
 The controller's utilization estimate is derived from TX-byte counter deltas and is
 a lab heuristic, not a universal congestion detector. Queue objects existing in OVSDB
 do not by themselves prove packets were scheduled as intended.
 
-Record actual Python, OS-Ken, OVS and Mininet versions. Do not write that the
-controller ran successfully until the startup and traffic tests pass.
+Record actual Python, OS-Ken, OVS and Mininet versions. For a new run, retain startup and traffic evidence.
 
 ## Upstream references
 
 - OS-Ken project: https://github.com/openstack/os-ken
 - OS-Ken documentation: https://docs.openstack.org/os-ken/latest/
-- OS-Ken package: https://pypi.org/project/os-ken/4.2.2/
+- OS-Ken package: https://pypi.org/project/os-ken/3.1.1/
