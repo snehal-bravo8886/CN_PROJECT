@@ -1,4 +1,6 @@
-# Member 2 controller integration update
+# Historical Member 2 controller integration update
+
+> Historical Ryu troubleshooting notes, retained for context only. The current controller uses OS-Ken 3.1.1; do not run the Ryu commands below. Follow [README_MEMBER2.md](README_MEMBER2.md) and the [current integration guide](../docs/INTEGRATION.md).
 
 ## Verified Mininet configuration
 
@@ -42,7 +44,7 @@ If these files are copied into `member2_sdn_controller/`, adjust the script path
 
 ## Python / Ryu compatibility status
 
-The VM currently reports Python `3.11.18`. The repository's current dependency file specifies `ryu==4.34`.
+The VM currently reports Python `3.11.18`. The dependency file at that historical stage specified `ryu==4.34`.
 
 An installation attempt with this Python version failed while building Ryu, reporting:
 
