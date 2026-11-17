@@ -4,9 +4,9 @@
 
 This project combines three components into a distributed log collection and congestion-aware networking system.
 
-- Member 1: UDP-based centralized log collection and querying.
-- Member 2: SDN controller with congestion detection and severity-based queue selection.
-- Member 3: Mininet topology, traffic generation, and performance analysis.
+- Member 1 — SNEHAL AGRAWAL: UDP-based centralized log collection and querying.
+- Member 2 — TEJAS DIWAKAR: SDN controller with congestion detection and severity-based queue selection.
+- Member 3 — SIDDHANT CHAWLA: Mininet topology, traffic generation, and performance analysis.
 
 ## 2. Integrated Architecture
 
@@ -36,7 +36,7 @@ The database query reported an average one-way delivery delay of approximately 1
 
 The OS-Ken controller successfully connected to switch S1 using OpenFlow 1.3.
 
-The controller monitored bottleneck port 4 and detected congestion when utilization exceeded 80%. It returned to baseline policy when utilization fell below 60%.
+The controller monitored bottleneck port 4 and detected congestion when utilization reached the 80% entry threshold. The implemented policy returns to baseline when utilization is at or below 60%.
 
 During the integrated test, bottleneck utilization reached approximately 100%, and the controller entered severity-priority mode.
 
@@ -75,3 +75,7 @@ All three project components were exercised together:
 The integrated project successfully demonstrated centralized UDP log collection over a Mininet network, SDN-based bottleneck monitoring, and severity-aware traffic queue selection.
 
 The test results confirm successful integration of the three members' components.
+
+## 8. Evidence scope
+
+The recorded integration results above are distinct from the committed baseline congestion experiments. See [evaluation and evidence](../EVALUATION.md) for the archived metrics and derived fairness calculation. The final integration report does not contain a matched quantitative QoS-versus-FIFO comparison or raw recovery logs.
