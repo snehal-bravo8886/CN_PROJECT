@@ -2,7 +2,7 @@
 
 **SNEHAL AGRAWAL (Member 1)** — UDP application; **TEJAS DIWAKAR (Member 2)** — SDN controller; **SIDDHANT CHAWLA (Member 3)** — Mininet and evaluation.
 
-The integrated demonstration is recorded in the [final integration report](integration/FINAL_INTEGRATION_REPORT.md). These instructions describe the current source tree; commands for new runs are not a claim of additional test execution.
+For completed test results, see the [final integration report](integration/FINAL_INTEGRATION_REPORT.md). The steps below are for running a new trial.
 
 ## Network configuration
 
@@ -82,7 +82,7 @@ h1 python3 -m app.client --server 10.0.0.4 --host-id H1 --count 300 --interval-m
 h2 python3 -m app.client --server 10.0.0.4 --host-id H2 --count 300 --interval-ms 100 --quiet --summary-file results/trial01_h2.json &
 ```
 
-Enter the first two commands, confirm the UDP collector and iperf3 listener are ready, then enter the last three commands. The congestion script runs only inside H3 and exits when the client completes. Run both clients concurrently. Observe controller utilization and queue rules while the background load is active; after traffic stops, wait for the controller to clear congestion. Use separate trial IDs, databases and JSON summaries for each run. For light/medium/heavy tests use 0.5M, 1.5M and 3M background offered rates respectively. These commands describe a reproducible workload, not exact historical launch timing. The adaptive controller cannot supply a true FIFO control under heavy congestion merely by omitting queue setup: a separate baseline forwarding configuration with no severity queue selection or HTB differentiation must be established and verified. Do not label an adaptive run FIFO.
+Enter the first two commands, confirm the UDP collector and iperf3 listener are ready, then enter the last three commands. The congestion script runs only inside H3 and exits when the client completes. Run both clients concurrently. Observe controller utilization and queue rules while the background load is active; after traffic stops, wait for the controller to clear congestion. Use separate trial IDs, databases and JSON summaries for each run. For light/medium/heavy tests use 0.5M, 1.5M and 3M background offered rates respectively. For a matched FIFO control, use a separate forwarding configuration with no severity queue selection or HTB differentiation. Verify that condition before recording baseline measurements. The trial commands above are not the exact launch sequence of the archived experiments.
 
 **After clients finish**, allow the collector to commit its data. From another normal terminal in member1_udp_application:
 

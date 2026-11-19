@@ -108,4 +108,4 @@ A high index does not imply low loss: heavy baseline delivery is only 343/600. N
 
 ### Evidence boundaries
 
-The committed material demonstrates implementation and integrated operation. A matched no-QoS/FIFO versus QoS comparison at identical offered loads, per-class throughput/jitter, and raw recovery logs are not archived in the current evidence set. Do not infer quantitative improvement or a strict scheduling guarantee from the baseline graphs or queue configuration alone. For a future comparison, retain equivalent workloads, run durations, queue settings, sender summaries, databases (locally), controller logs, and per-class metrics. Keep raw generated databases out of Git.
+The integration test verifies operation and queue selection. The saved baseline measurements do not establish a quantitative QoS improvement or strict scheduling guarantee. Matched FIFO/QoS trials, per-class throughput and jitter measurements, and raw recovery logs remain outstanding. Repeat trials with identical workloads, durations and documented queue settings; retain sender summaries, local databases, controller logs and per-class metrics.

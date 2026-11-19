@@ -262,7 +262,7 @@ class DistributedLogSDNController(app_manager.OSKenApp):
     @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
     def _flow_stats_reply_handler(self, ev):
         # Flow counters are logged for evidence/diagnostics. Port utilization
-        # drives the congestion state transition in this starter controller.
+        # drives the congestion state transition.
         for stat in ev.msg.body:
             if stat.priority == 100 and stat.packet_count:
                 self.logger.debug(

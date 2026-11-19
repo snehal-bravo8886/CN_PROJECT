@@ -26,7 +26,7 @@ h3 bash member3_mininet_testing/tests/congestion_test.sh 3M 30
 
 Wait until the receiver is listening before starting the client. Use 0.5M, 1.5M or 3M for light, medium or heavy load. The client validates its H3 interface/address, sends to H4, and exits after the configured duration. Stop the H4 listener when finished.
 
-The existing analysis script expects results/final-baseline.db and the historical JSON filenames. The generated database is not committed; to rerun that exact analysis, restore the matching database locally. The committed CSVs and PNGs can be inspected without it. Analysis requires Matplotlib (install in your Python environment using `python3 -m pip install matplotlib`). The analysis script writes reports to `results/`; use a separate working copy for new experiments to avoid replacing archived evidence.
+The analysis script requires `results/final-baseline.db` and the original sender-summary JSON files. The database is not tracked. Restore the matching database locally to repeat the analysis, or inspect the existing CSVs and PNGs directly. Install Matplotlib with `python3 -m pip install matplotlib`. The script writes to `results/`, so use a separate working copy for new experiments.
 
 ## Recorded baseline
 

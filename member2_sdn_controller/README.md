@@ -25,8 +25,7 @@ Poll interval is 2 seconds. Congestion activates at >=80% utilization, clears at
 | OpenFlow version | 1.3 |
 | Controller TCP port | 6653 |
 
-These are the values reported from your Mininet/OVS inspection. Recheck them if
-the topology changes. The controller reads DPID, port and capacity from `.env`.
+These values match the committed Mininet topology. Recheck them if the topology changes. The controller reads DPID, port and capacity from `.env`.
 
 ## UDP contract (must match Member 1)
 
@@ -54,7 +53,7 @@ cat .env
 ```
 
 Review `.env`; it should contain DPID `1`, port `4`, and capacity `2000000`.
-Do not commit a real `.env` if your team treats local configuration as untracked.
+Keep local `.env` files untracked.
 
 ## Start order
 
