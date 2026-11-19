@@ -9,7 +9,7 @@ H1 (10.0.0.1) and H2 (10.0.0.2) generate application logs; H3 (10.0.0.3) generat
 ## Files
 
 - topology/topology.py — Mininet LogTopology, registered as logtopo.
-- tests/congestion_test.sh — existing simple iperf3 traffic script; execute traffic in the correct isolated Mininet host namespaces rather than assuming the script creates them.
+- tests/congestion_test.sh — bounded iperf3 UDP client helper for the H3 namespace; start the receiver on H4 first.
 - analysis/analyze.py — reads SQLite and sender summaries, generates CSVs and plots using Matplotlib.
 - results/ — archived sender summaries, iperf3 transcripts, CSVs and graphs.
 
@@ -17,7 +17,16 @@ H1 (10.0.0.1) and H2 (10.0.0.2) generate application logs; H3 (10.0.0.3) generat
 
 Follow the [current integration guide](../docs/INTEGRATION.md) for controller startup, topology, queues, client/server and background traffic commands. For new experiments, use separate trial identifiers and save corresponding sender summaries and databases.
 
-The existing analysis script expects results/final-baseline.db and the historical JSON filenames. The generated database is not committed; to rerun that exact analysis, restore the matching database locally. The committed CSVs and PNGs can be inspected without it.
+From the Mininet CLI (working directory = repository root):
+
+```text
+h4 iperf3 -s -p 5201 &
+h3 bash member3_mininet_testing/tests/congestion_test.sh 3M 30
+```
+
+Wait until the receiver is listening before starting the client. Use 0.5M, 1.5M or 3M for light, medium or heavy load. The client validates its H3 interface/address, sends to H4, and exits after the configured duration. Stop the H4 listener when finished.
+
+The existing analysis script expects results/final-baseline.db and the historical JSON filenames. The generated database is not committed; to rerun that exact analysis, restore the matching database locally. The committed CSVs and PNGs can be inspected without it. Analysis requires Matplotlib (install in your Python environment using `python3 -m pip install matplotlib`). The analysis script writes reports to `results/`; use a separate working copy for new experiments to avoid replacing archived evidence.
 
 ## Recorded baseline
 

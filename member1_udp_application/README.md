@@ -48,14 +48,15 @@ python3 -m app.server --bind 127.0.0.1 --db logs.db
 Terminal 2 sends a workload:
 
 ```bash
-python3 -m app.client --server 127.0.0.1 --host-id h1 --count 25 --interval-ms 50 --summary-file h1_summary.json
-python3 -m app.client --server 127.0.0.1 --host-id h2 --count 25 --interval-ms 50 --summary-file h2_summary.json
+mkdir -p results
+python3 -m app.client --server 127.0.0.1 --host-id h1 --count 25 --interval-ms 50 --summary-file results/h1_summary.json
+python3 -m app.client --server 127.0.0.1 --host-id h2 --count 25 --interval-ms 50 --summary-file results/h2_summary.json
 ```
 
 Then compute loss:
 
 ```bash
-python3 -m app.compare_results --db logs.db --summaries h1_summary.json h2_summary.json --csv-out results/local_metrics.csv
+python3 -m app.compare_results --db logs.db --summaries results/h1_summary.json results/h2_summary.json --csv-out results/local_metrics.csv
 ```
 
 Stop the long-running server with Ctrl+C. `logs.db`, `results/`, and other generated data should not be committed.

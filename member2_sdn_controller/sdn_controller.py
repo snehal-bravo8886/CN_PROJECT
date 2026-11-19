@@ -1,13 +1,13 @@
 """
 Distributed UDP Log Aggregation — Member 2 SDN controller
-Framework: Ryu, OpenFlow 1.3
+Framework: OS-Ken, OpenFlow 1.3
 
 UDP destination-port contract (must match Member 1):
-  10000 DEBUG     -> OVS queue 0 (lowest)
+  10000 DEBUG     -> OVS queue 0 (lowest minimum-rate share)
   10001 INFO      -> OVS queue 1
   10002 WARNING   -> OVS queue 2
   10003 ERROR     -> OVS queue 3
-  10004 CRITICAL  -> OVS queue 4 (highest)
+  10004 CRITICAL  -> OVS queue 4 (highest minimum-rate share)
 
 IMPORTANT:
 - Set BOTTLENECK_DPID and BOTTLENECK_PORT below to the actual switch/egress port.
@@ -30,7 +30,7 @@ from os_ken.lib import hub
 
 
 # ----------------------- TEAM CONFIGURATION -----------------------
-# Fill these in after Member 3 shares the Mininet topology.
+# Defaults match the committed Mininet topology; override via environment if needed.
 BOTTLENECK_DPID = int(os.getenv("BOTTLENECK_DPID", "1"))
 BOTTLENECK_PORT = int(os.getenv("BOTTLENECK_PORT", "4"))
 LINK_CAPACITY_BPS = int(os.getenv("LINK_CAPACITY_BPS", "2000000"))

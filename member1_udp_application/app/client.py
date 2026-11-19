@@ -13,7 +13,7 @@ from .protocol import (DEFAULT_BASE_PORT, MAX_MESSAGE_CHARS, SEVERITIES,
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Generate timestamped, severity-tagged UDP logs")
-    parser.add_argument("--server", default="127.0.0.1", help="server IPv4 address (Mininet example: 10.0.0.10)")
+    parser.add_argument("--server", default="127.0.0.1", help="server IPv4 address (Mininet example: 10.0.0.4)")
     parser.add_argument("--host-id", default=socket.gethostname(), help="unique client/host name")
     parser.add_argument("--base-port", type=int, default=DEFAULT_BASE_PORT)
     parser.add_argument("--severity", choices=("ALL", *SEVERITIES), default="ALL")

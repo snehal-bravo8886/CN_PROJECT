@@ -77,12 +77,12 @@ The first setup command is a dry run. Apply only after verifying the egress inte
 ```text
 h4 python3 -m app.server --bind 0.0.0.0 --db results/trial01.db --print-every 0 > results/trial01_server.log 2>&1 &
 h4 iperf3 -s -p 5201 > results/trial01_iperf_server.log 2>&1 &
-h3 iperf3 -c 10.0.0.4 -u -b 3M -t 30 -p 5201 > results/trial01_iperf.txt 2>&1 &
+h3 bash ../member3_mininet_testing/tests/congestion_test.sh 3M 30 > results/trial01_iperf.txt 2>&1 &
 h1 python3 -m app.client --server 10.0.0.4 --host-id H1 --count 300 --interval-ms 100 --quiet --summary-file results/trial01_h1.json &
 h2 python3 -m app.client --server 10.0.0.4 --host-id H2 --count 300 --interval-ms 100 --quiet --summary-file results/trial01_h2.json &
 ```
 
-Allow the server and iperf3 listener to start before launching clients. Run both clients concurrently. Observe controller utilization and queue rules while the background load is active; after traffic stops, wait for the controller to clear congestion. Use separate trial IDs, databases and JSON summaries for each run. For light/medium/heavy tests use 0.5M, 1.5M and 3M background offered rates respectively. These commands describe a new reproducible workload, not exact historical launch timing.
+Enter the first two commands, confirm the UDP collector and iperf3 listener are ready, then enter the last three commands. The congestion script runs only inside H3 and exits when the client completes. Run both clients concurrently. Observe controller utilization and queue rules while the background load is active; after traffic stops, wait for the controller to clear congestion. Use separate trial IDs, databases and JSON summaries for each run. For light/medium/heavy tests use 0.5M, 1.5M and 3M background offered rates respectively. These commands describe a reproducible workload, not exact historical launch timing. The adaptive controller cannot supply a true FIFO control under heavy congestion merely by omitting queue setup: a separate baseline forwarding configuration with no severity queue selection or HTB differentiation must be established and verified. Do not label an adaptive run FIFO.
 
 **After clients finish**, allow the collector to commit its data. From another normal terminal in member1_udp_application:
 
@@ -102,6 +102,11 @@ Stop the lab processes gracefully (SIGINT to the collector so it flushes SQLite)
 - Sequence gaps are provisional, can shrink when packets arrive late, and cannot identify tail losses alone.
 - Switch flow counters are not application delivery counts.
 - iperf3 receiver throughput and jitter measure the background UDP flow, not individual log classes.
+
+## Submission documents
+
+- [SRS](SRS.md)
+- [STP](STP.md)
 
 ## Verification status
 

@@ -44,7 +44,7 @@ python3 -m app.query_logs --db demo_output/logs.db --stats
 python3 -m app.query_logs --db demo_output/logs.db --severity CRITICAL
 ```
 
-The recorded local demo uses ports 18000–18004 and stores 25/25 logs. The integrated system uses ports 10000–10004.
+The recorded local demo used ports 18000–18004 and stored 25/25 logs; new runs choose available ports automatically. The integrated system uses ports 10000–10004.
 
 ## Full system
 
@@ -63,6 +63,9 @@ Follow the [end-to-end integration guide](docs/INTEGRATION.md) to start the cont
 These are the committed baseline experiment results in [results/](member3_mininet_testing/results/). The separate final integration report records 50 stored logs (10 per severity), approximately 12 ms mean one-way delay per severity, congestion activation at approximately 100% utilization, and verified queue mappings. These results demonstrate integration; they are not a matched quantitative QoS-versus-FIFO comparison.
 
 ## Documentation and evidence
+
+- [Software Requirements Specification (SRS)](docs/SRS.md)
+- [Software Test Plan (STP)](docs/STP.md)
 
 - [Integration guide and protocol contract](docs/INTEGRATION.md)
 - [Final integration report, evaluation and fairness calculations](docs/integration/FINAL_INTEGRATION_REPORT.md)

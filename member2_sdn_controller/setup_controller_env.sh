@@ -5,8 +5,9 @@ cd "$(dirname "$0")"
 PYTHON_BIN="${PYTHON_BIN:-}"
 if [[ -z "$PYTHON_BIN" ]]; then
   if command -v uv >/dev/null 2>&1; then
-    PYTHON_BIN="$(uv python find 3.11)"
-  else
+    PYTHON_BIN="$(uv python find 3.11 2>/dev/null || true)"
+  fi
+  if [[ -z "$PYTHON_BIN" ]]; then
     PYTHON_BIN="$(command -v python3.11 || true)"
   fi
 fi

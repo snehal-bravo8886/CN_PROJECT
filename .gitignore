@@ -14,3 +14,14 @@ __pycache__/
 # Include Member 3 experiment results
 !member3_mininet_testing/results/
 !member3_mininet_testing/results/**
+
+# Never track generated databases, logs, local environments or secrets, even in results/.
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.log
+.env
+.venv-osken/
