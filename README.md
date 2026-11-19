@@ -16,15 +16,7 @@ All three components have been implemented and integrated, as documented in the 
 
 ## Architecture
 
-```text
-                           OS-Ken controller
-                              OpenFlow 1.3
-                                   |
-h1 (10.0.0.1) -- 10 Mbps --+       |
-h2 (10.0.0.2) -- 10 Mbps --+------ s1 -- 2 Mbps / 10 ms -- h4 (10.0.0.4)
-h3 (10.0.0.3) -- 10 Mbps --+       OVS port 4              UDP collector
-   iperf3 background traffic      s1-eth4                 SQLite
-```
+![System architecture: UDP clients, SDN controller, Open vSwitch QoS queues, bottleneck and central SQLite collector](docs/architecture.svg)
 
 H1 and H2 generate log traffic; H3 generates UDP background load to congest the bottleneck to H4. The controller polls the bottleneck every 2 seconds, enters severity-priority mode at utilization >= 80%, and returns to baseline forwarding at <= 60%. Between these thresholds it retains the current policy.
 
