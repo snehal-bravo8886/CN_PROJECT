@@ -76,6 +76,4 @@ Stop the long-running server with Ctrl+C. `logs.db`, `results/`, and other gener
 
 For the integrated demo, run clients in h1/h2 and the server in h4 (10.0.0.4) using the configured OpenFlow and OVS egress queue rules. Follow the [current integration guide](../docs/INTEGRATION.md). Default UDP ports 10000–10004 are fixed unless all three members agree to a change. Only the local demo substitutes other ports to avoid conflicts.
 
-See [TEAMMATE_HANDOFF.md](TEAMMATE_HANDOFF.md) and [../docs/INTEGRATION.md](../docs/INTEGRATION.md).
-
 **Limits:** Raw UDP is not guaranteed to deliver every packet. The application cannot itself prioritize switch queues. Measured one-way delays require synchronized clocks; Mininet hosts typically share the same kernel clock.

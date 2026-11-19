@@ -27,4 +27,4 @@ The existing analysis script expects results/final-baseline.db and the historica
 | Medium | 300/300 | 300/300 | 1.50 Mbps |
 | Heavy | 133/300 | 210/300 | 1.94 Mbps |
 
-See [evaluation summary](../docs/EVALUATION.md) for loss, jitter, derived fairness and evidence limitations. These baseline results are not a matched QoS-versus-FIFO comparison.
+See [evaluation section of the final integration report](../docs/integration/FINAL_INTEGRATION_REPORT.md#8-evaluation-and-evidence) for loss, jitter, derived fairness and evidence limitations. These baseline results are not a matched QoS-versus-FIFO comparison.

@@ -65,10 +65,9 @@ These are the committed baseline experiment results in [results/](member3_minine
 ## Documentation and evidence
 
 - [Integration guide and protocol contract](docs/INTEGRATION.md)
-- [Final integration report](docs/integration/FINAL_INTEGRATION_REPORT.md)
+- [Final integration report, evaluation and fairness calculations](docs/integration/FINAL_INTEGRATION_REPORT.md)
 - [Application test evidence](member1_udp_application/samples/verified_demo/)
-- [Controller setup and verification](member2_sdn_controller/README_MEMBER2.md)
+- [Controller setup and verification](member2_sdn_controller/README.md)
 - [Baseline performance results and graphs](member3_mininet_testing/results/)
-- [Evaluation summary and fairness calculations](docs/EVALUATION.md) (derived from archived baseline measurements)
 
 Do not commit generated databases, caches, credentials, or temporary output. Preserve representative experiment evidence and label test conditions.

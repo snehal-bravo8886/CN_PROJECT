@@ -110,4 +110,4 @@ Stop the lab processes gracefully (SIGINT to the collector so it flushes SQLite)
 - [x] Baseline light/medium/heavy measurements and graphs archived.
 - [ ] Archive matched baseline-versus-QoS per-class performance runs and raw recovery logs for independent quantitative verification.
 
-See [evaluation summary](EVALUATION.md) for the distinction between archived baseline measurements and final integration evidence.
+See [evaluation section of the final integration report](integration/FINAL_INTEGRATION_REPORT.md#8-evaluation-and-evidence) for the distinction between archived baseline measurements and final integration evidence.
